@@ -1,0 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from setuptools import setup
+
+NAME = 'apartment-finder'
+DESCRIPTION = 'Scrapes Kijiji for apartments and finds spec'
+URL = 'https://github.com/ahmedelgohary/apartment-finder'
+EMAIL = 'elgohary@ualberta.ca'
+AUTHORS = 'Ahmed El Gohary & Manimeldura De Silva'
+REQUIRES_PYTHON = '>=3.6.0'
+VERSION = 1.0
