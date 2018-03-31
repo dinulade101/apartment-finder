@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
+from routeFinder import RouteFinder
 # maybe add googlemaps
 
 
@@ -70,11 +71,21 @@ class Scraper():
             new_listing.lat = lat
 
             # add to array
+            print(float(new_listing.lon)*100000, float(new_listing.lat)*100000)
+            newRouter = RouteFinder("edmonton.txt")
+            try:
+                pathToUni, dist = newRouter.computePathToUni(((float(new_listing.lon)*100000), (float(new_listing.lat)*100000)))
+                print("number of waypoints:", len(pathToUni), "distance (in iterms in lat lot)", dist)
+                #pathToUni = newRouter.computePathToUni((,(-11350793.73),(5348479.89)))
+            except:
+                print("error")
+
             self.listings.append(new_listing)
 
 
 if __name__ == '__main__':
     try:
         kijiji = Scraper()
+        print(kijiji.listings)
     except:
         pass # who gives a shit

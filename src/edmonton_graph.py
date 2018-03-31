@@ -18,6 +18,8 @@ def load_edmonton_graph(filename):
 
     return graph, location
 
+def manhattan():
+    
 
 if __name__ == "__main__":
     pass
