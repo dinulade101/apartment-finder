@@ -4,7 +4,7 @@ import os
 class SlackHelper:
 
   def initializeSlackHelper(self):
-    self.slack_client = SlackClient("xoxb-340116437617-mgDrlObfZ0AKJtFm3YsMAqs4")
+    self.slack_client = SlackClient(os.environ["SLACK_BOT_TOKEN"])
     self.mybot_id = None
 
     #print(self.slack_client.rtm_connect())
