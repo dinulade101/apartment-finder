@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
 from routeFinder import RouteFinder
+from slackHelper import SlackHelper
 # maybe add googlemaps
 
 
@@ -73,8 +74,12 @@ class Scraper():
             # add to array
             print(float(new_listing.lon)*100000, float(new_listing.lat)*100000)
             newRouter = RouteFinder("edmonton.txt")
+            sp = SlackHelper()
+            sp.initializeSlackHelper()
             try:
                 pathToUni, dist = newRouter.computePathToUni(((float(new_listing.lon)*100000), (float(new_listing.lat)*100000)))
+                message = '{} {} {} {}'.format(new_listing.title, new_listing.price,"Distance to UNI", dist)
+                sp.postMessage(message)
                 print("number of waypoints:", len(pathToUni), "distance (in iterms in lat lot)", dist)
                 #pathToUni = newRouter.computePathToUni((,(-11350793.73),(5348479.89)))
             except:
