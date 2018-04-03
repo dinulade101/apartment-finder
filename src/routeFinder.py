@@ -34,34 +34,33 @@ class RouteFinder:
         uniVertex = computeClosestVertexFromLatLonCoord((5352133.1248, -11352133.1248), self.locations)
         #print("vertices", houseVertex, uniVertex)
 
+        self.computePathFromLRTToHouse(houseVertex, "listOfLRTStations.txt")
+
         path = self.least_cost_path(houseVertex, uniVertex)
         dist = self.computeDistanceFromPath(path)
 
         return path, dist
     
-    def computePathFromLRTToHouse(self):
-        EnterpriseSquare = (53.50166466, -113.523831238)
-        Belvedere = (53.586330988, -113.426331628)
-        Central = (53.537997848, -113.488498046)
-        CenturyPark = (53.454498182, -113.509831294) 
-        Churchill = (53.539831174, -113.486831386)
-        Clareview = (53.600997596, -113.406831706)
-        Coliseum = (53.555997776, -113.46916479)
-        Corona = (53.537831182, -113.504497982)
-        Grandin = (53.53499786, -113.506164642)
-        HealthSciences = (53.518831258, -113.522164578)
-        KingswayRoyal = (53.554497782, -113.500331332)
-        MacEwan = (53.541997832, -113.49249803)
-        McKernan = (53.507831302, -113.522331244)
-        NAIT = (53.5596144282, -113.503414653)
-        SouthCampus = (53.50166466, -113.523831238)
-        Southgate = (53.484664728, -113.5166646)
-        Stadium = (53.555997776, -113.46916479)
-        University = (53.52166458, -113.519831254)
+    def computePathFromLRTToHouse(self, house, lrtfilepath):
+        dictOfLRT = dict()
+        dictOfPaths = dict()
+        with open(lrtfilepath, 'r') as myFile:
+            for line in myFile:
+                lineItems = line.split(',')
+                #print(float(lineItems[1]))
+                coord = (float(lineItems[1])*100000, float(lineItems[2])*100000)
+                #print(lineItems[0], len(lineItems[0]))
+                dictOfLRT[(lineItems[0])]=computeClosestVertexFromLatLonCoord(coord, self.locations)
+        
+        print(dictOfLRT)
+        for key, val in dictOfLRT.items():
+            dictOfPaths[key] = self.least_cost_path(val, house)
+        
+        for key, val in dictOfPaths.items():
+            print(self.computeDistanceFromPath(val))
 
-        """
-            need to finish
-        """
+        
+        
 
 
     def least_cost_path(self, start, end):
@@ -70,6 +69,7 @@ class RouteFinder:
         events.insert((start, start, 0), 0)
         while (len(events)) > 0:
             pair, time = events.popmin()
+                
             #account for heuristic so it is not compounded
             if (pair[2]):
                 time -= pair[2]
@@ -79,10 +79,17 @@ class RouteFinder:
                     point1 = self.locations[pair[1]]
                     point2 = self.locations[neighbour]
 
+                    # maybe we could save distances between objects in a dict, and reuse them?
+                    
+
                     #add heuristic in for the form of euclidean distance
                     heuristic = euclidean_distance(point2, self.locations[end])
                     #print(manhattan_distance(point1, point2))
                     events.insert((pair[1], neighbour, heuristic), time + euclidean_distance(point1, point2) + heuristic)
+            # end loop right after destination is popped
+            if (pair[1] == end):
+                #print(pair[1], end)
+                break
             
         return get_path(reached, start, end)
 
@@ -144,7 +151,10 @@ def load_city_graph(filename):
 if __name__ == "__main__":
     #print(manhattan_distance([0,0], [3,4]))
     new = RouteFinder("edmonton.txt")
+    #start = time.time()
     path, dist = new.computePathToUni((5364728, -11335891))
-    print((path))
+    #end = time.time()
+    #print(len(path), end-start)
+    #new.computePathFromLRTToHouse("listOfLRTStations.txt")
     
     #graph, locations  = load_city_graph("edmonton.txt")
