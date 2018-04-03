@@ -49,7 +49,11 @@ class Scraper():
 
     def get_listings(self):
         # scrapes through kijiji page to find all the listings
+        counter = 5
         for listing in self.soup.find_all(attrs={"data-ad-id": not None}):
+            counter -= 1
+            if counter == 0:
+                break
             new_listing = Listing()
 
             new_listing.id = listing["data-ad-id"]
@@ -72,11 +76,13 @@ class Scraper():
             new_listing.lat = lat
 
             # add to array
+            '''
             print(float(new_listing.lon)*100000, float(new_listing.lat)*100000)
             newRouter = RouteFinder("edmonton.txt")
             sp = SlackHelper()
             sp.initializeSlackHelper()
             try:
+                print(((float(new_listing.lon)*100000), (float(new_listing.lat)*100000)))
                 pathToUni, dist = newRouter.computePathToUni(((float(new_listing.lon)*100000), (float(new_listing.lat)*100000)))
                 message = '{} {} {} {}'.format(new_listing.title, new_listing.price,"Distance to UNI", dist)
                 sp.postMessage(message)
@@ -84,13 +90,27 @@ class Scraper():
                 #pathToUni = newRouter.computePathToUni((,(-11350793.73),(5348479.89)))
             except:
                 print("error")
-
+            '''
             self.listings.append(new_listing)
 
 
 if __name__ == '__main__':
+    newRouter = RouteFinder("edmonton.txt")
+    sp = SlackHelper()
+    sp.initializeSlackHelper()
+    
     try:
         kijiji = Scraper()
-        print(kijiji.listings)
+        #print(kijiji.listings)
+        for i in kijiji.listings:
+            try:
+                print(((float(i.lat)*100000), (float(i.lon)*100000)))
+                pathToUni, dist = newRouter.computePathToUni(((float(i.lat)*100000), (float(i.lon)*100000)))
+                message = '{} {} {} {}'.format(i.title, i.price,"Distance to UNI", dist)
+                sp.postMessage(message)
+                print("number of waypoints:", len(pathToUni), "distance (in iterms in lat lot)", dist)
+                #pathToUni = newRouter.computePathToUni((,(-11350793.73),(5348479.89)))
+            except:
+                print("error")
     except:
         pass # who gives a shit

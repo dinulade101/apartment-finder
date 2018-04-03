@@ -1,6 +1,7 @@
 from graph import Graph
 from breadth_first_search import *
 from heapviz import *
+import math
 
 class RouteFinder:
     """
@@ -25,7 +26,8 @@ class RouteFinder:
             if i == (len(path)-1):
                 pass
             else:
-                distanceSoFar += euclidean_distance(self.locations[val], self.locations[path[i+1]])
+                distanceSoFar += convertLatLonDistToMetres(self.locations[val], self.locations[path[i+1]])
+                #convertLatLonDistToMetres(self.locations[val], self.locations[path[i+1]])
         #print(distanceSoFar)
         return distanceSoFar
 
@@ -52,17 +54,14 @@ class RouteFinder:
                 #print(lineItems[0], len(lineItems[0]))
                 dictOfLRT[(lineItems[0])]=computeClosestVertexFromLatLonCoord(coord, self.locations)
         
-        print(dictOfLRT)
+        #print(dictOfLRT)
         for key, val in dictOfLRT.items():
             dictOfPaths[key] = self.least_cost_path(val, house)
         
-        for key, val in dictOfPaths.items():
-            print(self.computeDistanceFromPath(val))
+        #for key, val in dictOfPaths.items():
+            #print(self.computeDistanceFromPath(val))
 
         
-        
-
-
     def least_cost_path(self, start, end):
         reached = {}
         events = BinaryHeap()
@@ -98,13 +97,26 @@ class RouteFinder:
 '''def manhattan_distance(point1, point2):
    return (((point1[0]-point2[1])**2+(point1[1]-point2[0])**2) ** 0.5)
 '''
+def convertLatLonDistToMetres(point1, point2):
+    diffX = abs(point2[0]-point1[0])/100000
+    diffY = abs(point2[1]-point1[1])/100000
+
+    #convert latitude to km
+    diffXKM = diffX * 110.574
+
+    #convert longitude to km
+    print((point1[0]+point2[0])/200000)
+    diffYKM = diffY * 111.320*math.cos(math.radians((point1[0]+point2[0])/200000))
+
+    return diffXKM+diffYKM
+
+
 def euclidean_distance(u, v):
     # euclidean distance between 2 sets
     return ((u[0]-v[0])**2+(u[1]-v[1])**2) ** 0.5
 
 def computeClosestVertexFromLatLonCoord(locationInCoords, locations):
     # initialize variables to keep track closest vertex as we interate through the city graph
-
     closestDist = float('inf')
     locationVertex = 0
     for key, val in locations.items():
@@ -125,16 +137,7 @@ def load_city_graph(filename):
     edges = []
     locations = dict()
     graph = Graph()
-    '''
-    with open(filename, 'r') as openFile:
-        for line in openFile:
-            lineItems = line.split(',')
-            if (lineItems[0] == 'V'):
-                graph.add_vertex(int(lineItems[1]))
-                locations[int(lineItems[1])] = (int(float(lineItems[2])*100000), int(float(lineItems[3])*100000))
-            elif (lineItems[0] == 'E'):
-                graph.add_edge((int(lineItems[1]), int(lineItems[2])))
-    '''
+
     with open(filename, 'r') as myfile:
         for line in myfile:
             lineItems = line.split(',')
@@ -152,7 +155,8 @@ if __name__ == "__main__":
     #print(manhattan_distance([0,0], [3,4]))
     new = RouteFinder("edmonton.txt")
     #start = time.time()
-    path, dist = new.computePathToUni((5364728, -11335891))
+    path, dist = new.computePathToUni((5356704.0, -11339163.51))
+    print(len(path), dist)
     #end = time.time()
     #print(len(path), end-start)
     #new.computePathFromLRTToHouse("listOfLRTStations.txt")
