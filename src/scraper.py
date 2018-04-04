@@ -105,8 +105,8 @@ if __name__ == '__main__':
         for i in kijiji.listings:
             try:
                 print(((float(i.lat)*100000), (float(i.lon)*100000)))
-                pathToUni, dist = newRouter.computePathToUni(((float(i.lat)*100000), (float(i.lon)*100000)))
-                message = '{} {} {} {}'.format(i.title, i.price,"Distance to UNI", dist)
+                pathToUni, dist, minStation = newRouter.computePathToUni(((float(i.lat)*100000), (float(i.lon)*100000)))
+                message = '{} {} "Distance to UNI" {} Closest LRT and distance {} {}'.format(i.title, i.price, dist, minStation[0], minStation[1])
                 sp.postMessage(message)
                 print("number of waypoints:", len(pathToUni), "distance (in iterms in lat lot)", dist)
                 #pathToUni = newRouter.computePathToUni((,(-11350793.73),(5348479.89)))

@@ -41,7 +41,7 @@ class RouteFinder:
         uniVertex = computeClosestVertexFromLatLonCoord((5352133.1248, -11352133.1248), self.locations)
 
         #calls function to build least cost path from each LRT station to house under consideration
-        self.computePathFromLRTToHouse(houseVertex, "listOfLRTStations.txt")
+        minStation = self.computePathFromLRTToHouse(houseVertex, "listOfLRTStations.txt")
 
         #calls function to find least cost path from the house vertex to the vertex of the University of Alberta
         path = self.least_cost_path(houseVertex, uniVertex)
@@ -50,11 +50,12 @@ class RouteFinder:
         dist = self.computeDistanceFromPath(path)
 
         #return both the path and distance
-        return path, dist
+        return path, dist, minStation
     
     def computePathFromLRTToHouse(self, house, lrtfilepath):
         dictOfLRT = dict()
         dictOfPaths = dict()
+        dictOfDistances = dict()
 
         #get LRT coordinates from text file and add to dictionary
         with open(lrtfilepath, 'r') as myFile:
@@ -66,6 +67,14 @@ class RouteFinder:
         #iterate through dictionary to find least cost path from each LRT to house 
         for key, val in dictOfLRT.items():
             dictOfPaths[key] = self.least_cost_path(val, house)
+        
+        for key, path in dictOfPaths.items():
+            dictOfDistances[key] = self.computeDistanceFromPath(path)
+        
+        #compute the closest LRT locaiton to house 
+        minStation = min(dictOfDistances.items(), key=lambda x:x[1])
+
+        return minStation
         
 
         
@@ -118,7 +127,7 @@ def convertLatLonDistToMetres(point1, point2):
     diffXKM = diffX * 110.574
 
     #convert longitude to km
-    print((point1[0]+point2[0])/200000)
+    #print((point1[0]+point2[0])/200000)
     diffYKM = diffY * 111.320*math.cos(math.radians((point1[0]+point2[0])/200000))
 
     return diffXKM+diffYKM
