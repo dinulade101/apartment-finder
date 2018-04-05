@@ -98,7 +98,7 @@ if __name__ == '__main__':
     newRouter = RouteFinder("edmonton.txt")
     sp = SlackHelper()
     sp.initializeSlackHelper()
-    
+
     try:
         kijiji = Scraper()
         #print(kijiji.listings)
@@ -113,4 +113,4 @@ if __name__ == '__main__':
             except:
                 print("error")
     except:
-        pass # who gives a shit
+        pass 
