@@ -2,6 +2,7 @@ from graph import Graph
 from breadth_first_search import *
 import math
 import settings
+from binary_heap import BinaryHeap
 
 class RouteFinder:
     """

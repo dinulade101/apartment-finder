@@ -1,5 +1,3 @@
-import graphviz
-
 class BinaryHeap:
     """
     An implementation of a binary heap using a list.

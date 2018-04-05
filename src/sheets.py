@@ -2,7 +2,7 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials as SAC
 
 
-class Sheets():
+class GoogleSheets():
     def __init__(self):
         scope = ['https://spreadsheets.google.com/feeds',
                  'https://www.googleapis.com/auth/drive']
@@ -11,12 +11,13 @@ class Sheets():
 
         self.sheet = client.open('Apartments').sheet1
 
-        self.apartments = self.sheet.get_all_records()
+        # self.apartments = self.sheet.get_all_records()
 
     def add_apartment(self, text, index):
         # index is the row that we want to insert the apartment at
         # text is an array of strings, e.g: ["Hello", "World", "!"]
         self.sheet.insert_row(text, index)
+
 
 if __name__ == "__main__":
     try:
@@ -25,6 +26,7 @@ if __name__ == "__main__":
         creds = SAC.from_json_keyfile_name('cmput.json', scope)
         client = gspread.authorize(creds)
         sheet = client.open('Apartments').sheet1
-        apartments = self.sheet.get_all_records()
+        apartments = sheet.get_all_records()
+
     except Exception as e:
         print("Error {} caught using Google Sheets!".format(e))
