@@ -1,6 +1,5 @@
 from graph import Graph
 from breadth_first_search import *
-from heapviz import *
 import math
 import settings
 
@@ -12,31 +11,33 @@ class RouteFinder:
     """
 
     def __init__(self, mapsFile):
-        #load up .txt file with lat and lon coordinates 
+        # load up .txt file with lat and lon coordinates
         self.graph, self.locations = load_city_graph(mapsFile)
-    
+
     def computeDistanceFromPath(self, path):
         '''
-        This function computes the distance from a path. However, this is not in meters.
-        This compute the distance use lat and lon coordinates, so a special formula will have to be used
-        to convert to meters. 
-        However, this will allow for comparison of distances of apartments within the constraints of this program.
+        This function computes the distance from a path. However, this is not
+        in meters. This compute the distance use lat and lon coordinates, so a
+        special formula will have to be used to convert to meters.
+        However, this will allow for comparison of distances of apartments
+        within the constraints of this program.
         '''
 
-        #compute distance between each vertex in a path array to get the total distance
+        # compute distance between each vertex in a path array to get the total
+        # distance
         distanceSoFar = 0
         for i, val in enumerate(path):
             if i == (len(path)-1):
-                #skip the first vertex beacuse there is no vertex before it 
+                # skip the first vertex beacuse there is no vertex before it
                 pass
             else:
                 distanceSoFar += convertLatLonDistToMetres(self.locations[val], self.locations[path[i+1]])
-                #convertLatLonDistToMetres(self.locations[val], self.locations[path[i+1]])
+                # convertLatLonDistToMetres(self.locations[val], self.locations[path[i+1]])
         #print(distanceSoFar)
         return distanceSoFar
 
     def computePathToUni(self, houseLocationInCoords):
-        #find the corresponding vertex using the lat and lon coordinates of the house, as well as the university 
+        #find the corresponding vertex using the lat and lon coordinates of the house, as well as the university
         houseVertex = computeClosestVertexFromLatLonCoord(houseLocationInCoords, self.locations)
         uniVertex = computeClosestVertexFromLatLonCoord((5352133.1248, -11352133.1248), self.locations)
 
@@ -46,12 +47,12 @@ class RouteFinder:
         #calls function to find least cost path from the house vertex to the vertex of the University of Alberta
         path = self.least_cost_path(houseVertex, uniVertex)
 
-        #compute distance in km from path 
+        #compute distance in km from path
         dist = self.computeDistanceFromPath(path)
 
         #return both the path and distance
         return path, dist, minStation
-    
+
     def computePathFromLRTToHouse(self, house, lrtfilepath):
         dictOfLRT = dict()
         dictOfPaths = dict()
@@ -63,36 +64,36 @@ class RouteFinder:
                 lineItems = line.split(',')
                 coord = (float(lineItems[1])*100000, float(lineItems[2])*100000)
                 dictOfLRT[(lineItems[0])]=computeClosestVertexFromLatLonCoord(coord, self.locations)
-        
-        #iterate through dictionary to find least cost path from each LRT to house 
+
+        #iterate through dictionary to find least cost path from each LRT to house
         for key, val in dictOfLRT.items():
             dictOfPaths[key] = self.least_cost_path(val, house)
-        
+
         for key, path in dictOfPaths.items():
             dictOfDistances[key] = self.computeDistanceFromPath(path)
-        
-        #compute the closest LRT locaiton to house 
+
+        #compute the closest LRT locaiton to house
         minStation = min(dictOfDistances.items(), key=lambda x:x[1])
 
         return minStation
-        
 
-        
+
+
     def least_cost_path(self, start, end):
         reached = {}
         events = BinaryHeap()
 
-        #insert start locatin with time of 0 into the heap 
+        #insert start locatin with time of 0 into the heap
         events.insert((start, start, 0), 0)
         while (len(events)) > 0:
             pair, time = events.popmin()
-                
+
             #account for heuristic so it is not compounded
             if (pair[2]):
                 time -= pair[2]
 
             if pair[1] not in reached:
-                # add to reached dictionary 
+                # add to reached dictionary
                 reached[pair[1]] = pair[0]
 
                 #consider neighbors around each point and distance to each neighbor
@@ -101,20 +102,20 @@ class RouteFinder:
                     point2 = self.locations[neighbour]
 
                     # maybe we could save distances between objects in a dict, and reuse them?
-                    
+
 
                     # add heuristic in for the form of euclidean distance. This will helps lead the searching algorithm
-                    # more towards the end location 
+                    # more towards the end location
 
                     heuristic = euclidean_distance(point2, self.locations[end])
-                    
-                    # add key and val to BinaryHeap called events 
+
+                    # add key and val to BinaryHeap called events
                     events.insert((pair[1], neighbour, heuristic), time + euclidean_distance(point1, point2) + heuristic)
-            
+
             # end loop right after destination is popped
             if (pair[1] == end):
                 break
-            
+
         # use the get_path included with the breadth_first_search helper file to find path from reached dictionary
         return get_path(reached, start, end)
 
@@ -146,10 +147,10 @@ def computeClosestVertexFromLatLonCoord(locationInCoords, locations):
     for key, val in locations.items():
         dist = euclidean_distance(locationInCoords, val)
         if dist < closestDist:
-            locationVertex = key 
+            locationVertex = key
             closestDist = dist
     return locationVertex
-    
+
 
 def load_city_graph(filename):
     #loads up the graph of a given city (only Edmonton for now) from a given textfile
@@ -160,7 +161,7 @@ def load_city_graph(filename):
     locations = dict()
     graph = Graph()
 
-    #parse txt file containing vertices and indices to build graph 
+    #parse txt file containing vertices and indices to build graph
     with open(filename, 'r') as myfile:
         for line in myfile:
             lineItems = line.split(',')
@@ -169,11 +170,11 @@ def load_city_graph(filename):
                 locations[int(lineItems[1])] = (int(float(lineItems[2])*100000),int(float(lineItems[3])*100000))
             elif (lineItems[0] == 'E'):
                 graph.add_edge((int(lineItems[1]), int(lineItems[2])))
-        
+
     return graph, locations
 
 
-# some testing code to ensure everything works 
+# some testing code to ensure everything works
 if __name__ == "__main__":
     #print(manhattan_distance([0,0], [3,4]))
     new = RouteFinder("edmonton.txt")
@@ -183,5 +184,5 @@ if __name__ == "__main__":
     #end = time.time()
     #print(len(path), end-start)
     #new.computePathFromLRTToHouse("listOfLRTStations.txt")
-    
+
     #graph, locations  = load_city_graph("edmonton.txt")

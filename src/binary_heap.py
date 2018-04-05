@@ -1,5 +1,4 @@
 import graphviz
-from heapviz import *
 
 class BinaryHeap:
     """
@@ -161,16 +160,4 @@ def heapsort(items):
     return sorted
 
 if __name__ == "__main__":
-    import doctest
-    doctest.testmod()
-
-    heap = BinaryHeap()
-    heap.insert("cat", 4)
-    heap.insert("bear", 0)
-    heap.insert("dog", 1)
-    heap.insert("pig", 2)
-    heap.popmin()
-
-    dot = heapviz(heap)
-
-    dot.render(view=True)
+    pass
