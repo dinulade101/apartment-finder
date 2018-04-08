@@ -43,16 +43,18 @@ class RouteFinder:
         uniVertex = computeClosestVertexFromLatLonCoord((5352133.1248, -11352133.1248), self.locations)
 
         #calls function to build least cost path from each LRT station to house under consideration
-        minStation = self.computePathFromLRTToHouse(houseVertex, "listOfLRTStations.txt")
+        minStation, distToStation = self.computePathFromLRTToHouse(houseVertex, "listOfLRTStations.txt")
 
         #calls function to find least cost path from the house vertex to the vertex of the University of Alberta
         path = self.least_cost_path(houseVertex, uniVertex)
+        if path == None:
+            return "Path could not be computed", 0, minStation, distToStation
+        else:
+            #compute distance in km from path
+            dist = self.computeDistanceFromPath(path)
 
-        #compute distance in km from path
-        dist = self.computeDistanceFromPath(path)
-
-        #return both the path and distance
-        return path, dist, minStation
+            #return both the path and distance
+            return path, dist, minStation, distToStation
 
     def computePathFromLRTToHouse(self, house, lrtfilepath):
         dictOfLRT = dict()
@@ -66,19 +68,76 @@ class RouteFinder:
                 coord = (float(lineItems[1])*100000, float(lineItems[2])*100000)
                 dictOfLRT[(lineItems[0])]=computeClosestVertexFromLatLonCoord(coord, self.locations)
 
+        
+        path, closestLRT = self.least_cost_path_lrt(dictOfLRT, house)
+        #print("new way", closestLRT, self.computeDistanceFromPath(path))
         #iterate through dictionary to find least cost path from each LRT to house
-        for key, val in dictOfLRT.items():
+        '''for key, val in dictOfLRT.items():
             dictOfPaths[key] = self.least_cost_path(val, house)
 
         for key, path in dictOfPaths.items():
             dictOfDistances[key] = self.computeDistanceFromPath(path)
-
+        '''
         #compute the closest LRT locaiton to house
-        minStation = min(dictOfDistances.items(), key=lambda x:x[1])
+        #minStation = min(dictOfDistances.items(), key=lambda x:x[1])
+        if closestLRT == None:
+            return "Error: Could not find closest LRT", 0
+        else:
+            return closestLRT, self.computeDistanceFromPath(path)
 
-        return minStation
+    def least_cost_path_lrt(self, lrts, end):
+        reached = {}
+        events = BinaryHeap()
+
+        #insert start location with time of 0 into the heap
+        counter  = 0
+        for key, val in lrts.items():
+            events.insert((val, val, 0), 0)
+        
+        while (len(events)) > 0:
+            pair, time = events.popmin()
+            #print(time)
+
+            #account for heuristic so it is not compounded
+            if (pair[2]):
+                time -= pair[2]
+
+            if pair[1] not in reached:
+                # add to reached dictionary
+                reached[pair[1]] = pair[0]
+
+                #consider neighbors around each point and distance to each neighbor
+                for neighbour in self.graph.neighbours(pair[1]):
+                    point1 = self.locations[pair[1]]
+                    point2 = self.locations[neighbour]
+
+                    # maybe we could save distances between objects in a dict, and reuse them?
 
 
+                    # add heuristic in for the form of euclidean distance. This will helps lead the searching algorithm
+                    # more towards the end location
+
+                    heuristic = euclidean_distance(point2, self.locations[end])
+
+                    # add key and val to BinaryHeap called events
+                    events.insert((pair[1], neighbour, heuristic), time + euclidean_distance(point1, point2) + heuristic)
+
+            # end loop right after destination is popped
+            if (pair[1] == end):
+                break
+
+        # use the get_path included with the breadth_first_search helper file to find path from reached dictionary
+        path = None
+        closestLRT = None
+        for key, val in lrts.items():
+            if val in reached:
+                path = get_path(reached, val, end)
+            if path == None:
+                pass
+            else:
+                closestLRT = key
+                break 
+        return path, closestLRT
 
     def least_cost_path(self, start, end):
         reached = {}
@@ -180,8 +239,8 @@ if __name__ == "__main__":
     #print(manhattan_distance([0,0], [3,4]))
     new = RouteFinder("edmonton.txt")
     #start = time.time()
-    path, dist = new.computePathToUni((5356704.0, -11339163.51))
-    print(len(path), dist)
+    path, dist, minstation, distToStation = new.computePathToUni((5352133.1248, -11352133.1248))
+    print(len(path), dist, minstation, distToStation)
     #end = time.time()
     #print(len(path), end-start)
     #new.computePathFromLRTToHouse("listOfLRTStations.txt")

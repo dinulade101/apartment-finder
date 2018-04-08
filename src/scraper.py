@@ -4,6 +4,7 @@ from routeFinder import RouteFinder
 from slackHelper import SlackHelper
 import settings
 import sheets
+from naturalLanguageProcessing import keyWordFinder
 
 class Listing():
     '''
@@ -49,8 +50,11 @@ class Scraper():
 
     def get_listings(self):
         # scrapes through kijiji page to find all the listings
-        counter = 5
+        counter = 3
         for listing in self.soup.find_all(attrs={"data-ad-id": not None}):
+            counter = counter - 1
+            if counter < 0:
+                break
             new_listing = Listing()
 
             new_listing.id = listing["data-ad-id"]
@@ -85,15 +89,23 @@ if __name__ == '__main__':
     print("here")
     kijiji = Scraper()
     sheet = sheets.GoogleSheets()
-
+    keyWords = ["pet", "patio", "dog", "cat"]
     for i in kijiji.listings:
-        print(i.title)
-        pathToUni, dist, minStation = newRouter.computePathToUni((
+        #print(i.url)
+        kw = keyWordFinder(i.url)
+        foundWords = kw.findKeyWords(keyWords)
+        print(foundWords)
+
+        pathToUni, dist, minStation, distToMinStation = newRouter.computePathToUni((
                         (float(i.lat)*100000), (float(i.lon)*100000)))
 
-        message = '{} {} "Distance to UNI" {} Closest LRT and distance {} {}'.format(i.title, i.price, dist, minStation[0], minStation[1])
+        message = '{0} {1} \n *Distance to UNI:* {2:.2f}  \n *Closest LRT:* {3} {4:.2f} km away \n'.format(i.title, i.price, dist, minStation, distToMinStation)
+        if foundWords:
+            message += "*We found the following keywords:* \n"
+            for word in foundWords:
+                message += str(word) + "\n"
 
-        if int(i.price[1:].replace(',', '')) < settings.MIN_PRICE:
+        '''if int(i.price[1:].replace(',', '')) < settings.MIN_PRICE:
             continue
         if int(i.price[1:].replace(',', '')) > settings.MAX_PRICE:
             continue
@@ -103,7 +115,7 @@ if __name__ == '__main__':
             continue
 
         sheet.add_apartment(message.split(), index)
-        index += 1
+        index += 1'''
         sp.postMessage(message)
 
     # except Exception as e:

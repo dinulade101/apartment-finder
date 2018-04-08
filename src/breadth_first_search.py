@@ -83,6 +83,8 @@ def get_path(reached, start, end):
   path = [end]
 
   while end != start:
+    if end == reached[end]:
+      return None
     end = reached[end]
     path.append(end)
 
