@@ -52,8 +52,8 @@ class Scraper():
         # scrapes through kijiji page to find all the listings
         counter = 3
         for listing in self.soup.find_all(attrs={"data-ad-id": not None}):
-            counter = counter - 1
-            if counter < 0:
+            counter -= 1
+            if counter == 0:
                 break
             new_listing = Listing()
 
@@ -85,7 +85,7 @@ if __name__ == '__main__':
     newRouter = RouteFinder("edmonton.txt")
     sp = SlackHelper()
     sp.initializeSlackHelper()
-    index = 0
+    index = 1
     print("here")
     kijiji = Scraper()
     sheet = sheets.GoogleSheets()
@@ -105,18 +105,19 @@ if __name__ == '__main__':
             for word in foundWords:
                 message += str(word) + "\n"
 
-        '''if int(i.price[1:].replace(',', '')) < settings.MIN_PRICE:
+        if int(i.price[1:].replace(',', '')[:-3]) < settings.MIN_PRICE:
             continue
-        if int(i.price[1:].replace(',', '')) > settings.MAX_PRICE:
+        if int(i.price[1:].replace(',', '')[:-3]) > settings.MAX_PRICE:
             continue
-        if int(minStation[1]) > settings.MAX_DIST_TO_LRT:
+        if int(distToMinStation) > settings.MAX_DIST_TO_LRT:
             continue
         if int(dist) > settings.MAX_DIST_TO_UNI:
             continue
 
         sheet.add_apartment(message.split(), index)
-        index += 1'''
+        index += 1
         sp.postMessage(message)
 
     # except Exception as e:
     #     print("error2 {}".format(e))
+    
