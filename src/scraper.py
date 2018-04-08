@@ -51,6 +51,9 @@ class Scraper():
         # scrapes through kijiji page to find all the listings
         counter = 5
         for listing in self.soup.find_all(attrs={"data-ad-id": not None}):
+            counter -= 1
+            if counter == 0:
+                break
             new_listing = Listing()
 
             new_listing.id = listing["data-ad-id"]
@@ -81,7 +84,7 @@ if __name__ == '__main__':
     newRouter = RouteFinder("edmonton.txt")
     sp = SlackHelper()
     sp.initializeSlackHelper()
-    index = 0
+    index = 1
     print("here")
     kijiji = Scraper()
     sheet = sheets.GoogleSheets()
@@ -93,9 +96,9 @@ if __name__ == '__main__':
 
         message = '{} {} "Distance to UNI" {} Closest LRT and distance {} {}'.format(i.title, i.price, dist, minStation[0], minStation[1])
 
-        if int(i.price[1:].replace(',', '')) < settings.MIN_PRICE:
+        if int(i.price[1:].replace(',', '')[:-3]) < settings.MIN_PRICE:
             continue
-        if int(i.price[1:].replace(',', '')) > settings.MAX_PRICE:
+        if int(i.price[1:].replace(',', '')[:-3]) > settings.MAX_PRICE:
             continue
         if int(minStation[1]) > settings.MAX_DIST_TO_LRT:
             continue
