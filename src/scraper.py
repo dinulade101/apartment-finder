@@ -19,6 +19,13 @@ class Listing():
         self.desc = None
         self.price = None
         self.title = None
+        self.bathrooms = None
+        self.furnished = None
+        self.pets = None
+        self.pathToUni = None
+        self.dist = None
+        self.minStation = None
+        self.distToMinStation = None
 
 
 class Scraper():
@@ -68,6 +75,11 @@ class Scraper():
                 desc = soup.find("meta", property="og:description")["content"]
                 lat = soup.find("meta", property="og:latitude")["content"]
                 lon = soup.find("meta", property="og:longitude")["content"]
+                features = soup.find_all("dd")
+                bathrooms = features[0].get_text()
+                furnished = features[1].get_text()
+                pet_friendly = features[2].get_text()
+
             except:
                 continue
             # update data for new_listing
@@ -76,7 +88,9 @@ class Scraper():
             new_listing.desc = desc
             new_listing.lon = lon
             new_listing.lat = lat
-
+            new_listing.bathrooms = bathrooms
+            new_listing.furnished = furnished
+            new_listing.pets = pet_friendly
             # add to array
             self.listings.append(new_listing)
 
@@ -120,4 +134,3 @@ if __name__ == '__main__':
 
     # except Exception as e:
     #     print("error2 {}".format(e))
-    
