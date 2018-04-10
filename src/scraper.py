@@ -100,26 +100,45 @@ class Scraper():
             new_listing.bathrooms = bathrooms
             new_listing.furnished = furnished
             new_listing.pets = pet_friendly
+
             # add to array
             self.listings.append(new_listing)
 
-            new_listing.pathToUni, new_listing.dist, new_listing.minStation, new_listing.distToMinStation = self.newRouter.computePathToUni((
-                            (float(lat)*100000), (float(lon)*100000)))
-
-            message = '{0} {1} \n *Distance to UNI:* {2:.2f}  \n *Closest LRT:* {3} {4:.2f} km away \n'.format(title, price, new_listing.dist, new_listing.minStation, new_listing.distToMinStation)
-
-            kw = keyWordFinder(new_listing.url)
-            foundWords = kw.findKeyWords(self.keyWords)
-
-            if foundWords:
-                message += "*We found the following keywords:* \n"
-                for word in foundWords:
-                    message += str(word) + "\n"
+            print(title)
 
             if int(new_listing.price[1:].replace(',', '')[:-3]) < settings.MIN_PRICE:
                 continue
             if int(new_listing.price[1:].replace(',', '')[:-3]) > settings.MAX_PRICE:
                 continue
+            if (float(lon) > settings.LON_MAX or float(lon) < settings.LON_MIN):
+                print(float(lon), settings.LON_MAX, settings.LON_MIN)
+                continue
+            if (float(lat)> settings.LAT_MAX or float(lat) < settings.LAT_MIN):
+                print(float(lat), settings.LAT_MAX, settings.LAT_MIN)
+                continue
+
+            try:
+                new_listing.pathToUni, new_listing.dist, new_listing.minStation, new_listing.distToMinStation = self.newRouter.computePathToUni((
+                                (float(lat)*100000), (float(lon)*100000)))
+            except:
+                continue
+
+            message = '{0} {1} \n *Distance to UNI:* {2:.2f}  \n *Closest LRT:* {3} {4:.2f} km away \n *Number of Bathrooms:* {5} \n *Furnished:* {6} \n *Pet Friendly:* {7} \n'.format(title,
+             price, new_listing.dist, new_listing.minStation, new_listing.distToMinStation, new_listing.bathrooms, new_listing.furnished, new_listing.pets)
+
+
+            try: 
+                kw = keyWordFinder(new_listing.url)
+                foundWords = kw.findKeyWords(settings.KEYWORDS)
+
+                if foundWords:
+                    message += "*We found the following sentence snippets:* \n"
+                    for word in foundWords:
+                        message += str(word) + "\n"
+            except:
+                continue
+            
+
             if int(new_listing.distToMinStation) > settings.MAX_DIST_TO_LRT:
                 continue
             if int(new_listing.dist) > settings.MAX_DIST_TO_UNI:

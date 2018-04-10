@@ -15,7 +15,8 @@ class keyWordFinder:
         self.cleanedTokens = None
         self.attList = None
         self.filteredWords = None
-        self.fullSynsSet = []
+        self.filteredWordsDict = dict()
+        self.fullSynsSet = dict()
     
     def getHTMLResponseAndParse(self):
         response = urllib.request.urlopen(self.url)
@@ -27,23 +28,54 @@ class keyWordFinder:
     def cleanOutput(self):
         stringifiedDesc = str.join(u'\n', map(str, self.desc))
         stopWords = set(stopwords.words('english'))
-        itemsToRemove = ['<', 'p', '>', '<', 'strong', '>', 'An', '!', '&', 'amp', ';', 'br/', '/strong', ',', ',','By', 'clicking', '``', 'Send', 'Email', "''", ',', 'consent', 'action', 'accordance', '<', 'href=', "''", 'https', ':','nofollow', 'noopener', 'noreferrer', "''", 'target=', "''", '_blank', "''", '>', 'Terms', 'Use', '<', '/a', '>', '<', 'href=', "''", 'https', ':', '//help.kijiji.ca/helpdesk/policies/kijiji-privacy-policy', "''", 'rel=', "''", 'nofollow', 'noopener', 'noreferrer', "''", 'target=', "''", '_blank', "''", '>', 'Privacy', 'Policy', '<', '/a', '>', '.', '<', '/p', '>']
+        stopWords = []
+        itemsToRemove = ['<', 'p', '>', '<', 'strong', '>', 'An', '*', '!','/em', '&', 'amp', ';', 'br/', '/strong', ',', ',','By', 'clicking', '``', 'Send', 'Email', "''", ',', 'consent', 'action', 'accordance', '<', 'href=', "''", 'https', ':','nofollow', 'noopener', 'noreferrer', "''", 'target=', "''", '_blank', "''", '>', 'Terms', 'Use', '<', '/a', '>', '<', 'href=', "''", 'https', ':', '//help.kijiji.ca/helpdesk/policies/kijiji-privacy-policy', "''", 'rel=', "''", 'nofollow', 'noopener', 'noreferrer', "''", 'target=', "''", '_blank', "''", '>', 'Privacy', 'Policy', '<', '/a', '>', '.', '<', '/p', '>']
+        otherNonCharSymbols = ['!','+','<','[','%','<=',']','&','-','<>','|','.','=','~',
+'(','/','=='	,'~=',
+')',	'/!',	'>',	
+'*',	'//',	'>=',
+'*!',	'{',	'?',	
+'**',	'}',	'@',	':',
+';',	'^',	'|=',	'&=',
+'+=',	'-=',	'*=',	'/=',
+'**=']
         tokenizedDesc = word_tokenize(stringifiedDesc)
         self.filteredWords = [w for w in tokenizedDesc if not w in stopWords and not w in itemsToRemove]
         
         for i in self.filteredWords:
             synSet = wordnet.synsets(i)
+            self.fullSynsSet[i] = []
             for j in synSet:
-                self.fullSynsSet.append(j.lemmas()[0].name())
+                self.fullSynsSet[i].append(j.lemmas()[0].name())
+            
+        #self.fullSynsSet.extend(self.filteredWords)
+        print(self.fullSynsSet)
        
     def findKeyWords(self, keyWords):
         self.getHTMLResponseAndParse()
         self.cleanOutput()
         foundKeyWords = []
         for word in keyWords:
-            if word in self.fullSynsSet:
-                foundKeyWords.append(word)
-        return foundKeyWords
+            for key, val in self.fullSynsSet.items():
+                if word in val:
+                    foundKeyWords.append(key)
+        
+        #print("found key words",foundKeyWords)
+        sentenceSnippets = []
+
+        #remove duplicate entries from foundKeyWords
+
+
+        for word in foundKeyWords:
+            #print("hello")
+            index = self.filteredWords.index(word)
+            #print("index", index)
+            try:
+                sentenceSnippets.append(self.filteredWords[index-4:index+4])
+            except:
+                continue
+        #print(sentenceSnippets)
+        return sentenceSnippets
     
 
 '''
