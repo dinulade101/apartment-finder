@@ -111,10 +111,10 @@ class Scraper():
             if int(new_listing.price[1:].replace(',', '')[:-3]) > settings.MAX_PRICE:
                 continue
             if (float(lon) > settings.LON_MAX or float(lon) < settings.LON_MIN):
-                print(float(lon), settings.LON_MAX, settings.LON_MIN)
+                #print(float(lon), settings.LON_MAX, settings.LON_MIN)
                 continue
             if (float(lat)> settings.LAT_MAX or float(lat) < settings.LAT_MIN):
-                print(float(lat), settings.LAT_MAX, settings.LAT_MIN)
+                #print(float(lat), settings.LAT_MAX, settings.LAT_MIN)
                 continue
 
             try:
@@ -144,7 +144,8 @@ class Scraper():
             if int(new_listing.dist) > settings.MAX_DIST_TO_UNI:
                 continue
 
-            self.sheet.add_apartment(message.split(), self.index)
+            messageArrayForSheets = [str(title),str(price),str(new_listing.dist), str(new_listing.minStation), str(new_listing.distToMinStation), str(new_listing.bathrooms), str(new_listing.furnished), str(new_listing.pets)]
+            self.sheet.add_apartment(messageArrayForSheets, self.index)
             self.index += 1
             self.sp.postMessage(message)
 

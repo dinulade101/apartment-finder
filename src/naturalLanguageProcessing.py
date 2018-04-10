@@ -31,14 +31,14 @@ class keyWordFinder:
         stopWords = []
         itemsToRemove = ['<', 'p', '>', '<', 'strong', '>', 'An', '*', '!','/em', '&', 'amp', ';', 'br/', '/strong', ',', ',','By', 'clicking', '``', 'Send', 'Email', "''", ',', 'consent', 'action', 'accordance', '<', 'href=', "''", 'https', ':','nofollow', 'noopener', 'noreferrer', "''", 'target=', "''", '_blank', "''", '>', 'Terms', 'Use', '<', '/a', '>', '<', 'href=', "''", 'https', ':', '//help.kijiji.ca/helpdesk/policies/kijiji-privacy-policy', "''", 'rel=', "''", 'nofollow', 'noopener', 'noreferrer', "''", 'target=', "''", '_blank', "''", '>', 'Privacy', 'Policy', '<', '/a', '>', '.', '<', '/p', '>']
         otherNonCharSymbols = ['!','+','<','[','%','<=',']','&','-','<>','|','.','=','~',
-'(','/','=='	,'~=',
-')',	'/!',	'>',	
-'*',	'//',	'>=',
-'*!',	'{',	'?',	
-'**',	'}',	'@',	':',
-';',	'^',	'|=',	'&=',
-'+=',	'-=',	'*=',	'/=',
-'**=']
+        '(','/','=='	,'~=',
+        ')',	'/!',	'>',	
+        '*',	'//',	'>=',
+        '*!',	'{',	'?',	
+        '**',	'}',	'@',	':',
+        ';',	'^',	'|=',	'&=',
+        '+=',	'-=',	'*=',	'/=',
+        '**=']
         tokenizedDesc = word_tokenize(stringifiedDesc)
         self.filteredWords = [w for w in tokenizedDesc if not w in stopWords and not w in itemsToRemove]
         
@@ -49,7 +49,7 @@ class keyWordFinder:
                 self.fullSynsSet[i].append(j.lemmas()[0].name())
             
         #self.fullSynsSet.extend(self.filteredWords)
-        print(self.fullSynsSet)
+        #print(self.fullSynsSet)
        
     def findKeyWords(self, keyWords):
         self.getHTMLResponseAndParse()

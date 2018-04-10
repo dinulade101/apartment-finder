@@ -239,8 +239,11 @@ if __name__ == "__main__":
     #print(manhattan_distance([0,0], [3,4]))
     new = RouteFinder("edmonton.txt")
     #start = time.time()
-    path, dist, minstation, distToStation = new.computePathToUni((5352133.1248, -11352133.1248))
+    path, dist, minstation, distToStation = new.computePathToUni((5332133.1248, -11332133.1248))
+    path2, dist2, minstation2, distToStation2 = new.computePathToUni((5352133.1248, -11332133.1248))
+
     print(len(path), dist, minstation, distToStation)
+    print(len(path2), dist2, minstation2, distToStation2)
     #end = time.time()
     #print(len(path), end-start)
     #new.computePathFromLRTToHouse("listOfLRTStations.txt")
