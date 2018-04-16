@@ -5,7 +5,7 @@ program
 
 # set the minimum and maximum prices for the apartments
 MIN_PRICE = 0
-MAX_PRICE = 1500
+MAX_PRICE = 1299
 
 #DELAY = 10
 

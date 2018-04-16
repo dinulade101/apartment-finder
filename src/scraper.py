@@ -6,6 +6,7 @@ import settings
 import sheets
 from naturalLanguageProcessing import keyWordFinder
 
+
 class Listing():
     '''
     Class used to define a Listing, and stores all of the listings properties such as:
@@ -127,7 +128,7 @@ class Scraper():
              price, new_listing.dist, new_listing.minStation, new_listing.distToMinStation, new_listing.bathrooms, new_listing.furnished, new_listing.pets)
 
 
-            try: 
+            try:
                 kw = keyWordFinder(new_listing.url)
                 foundWords = kw.findKeyWords(settings.KEYWORDS)
 
@@ -137,7 +138,7 @@ class Scraper():
                         message += str(word) + "\n"
             except:
                 continue
-            
+
 
             if int(new_listing.distToMinStation) > settings.MAX_DIST_TO_LRT:
                 continue
