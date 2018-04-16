@@ -1,3 +1,8 @@
+"""
+CREDIT TO DR. ZACHARY FRIGGSTAD
+Directed Graph Class
+"""
+
 from graph import Graph
 from collections import deque
 import random, time
