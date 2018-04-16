@@ -1,3 +1,8 @@
+"""
+CREDIT TO DR. ZACHARY FRIGGSTAD
+Directed Graph Class
+"""
+
 class BinaryHeap:
     """
     An implementation of a binary heap using a list.

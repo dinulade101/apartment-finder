@@ -236,16 +236,9 @@ def load_city_graph(filename):
 
 # some testing code to ensure everything works
 if __name__ == "__main__":
-    #print(manhattan_distance([0,0], [3,4]))
     new = RouteFinder("edmonton.txt")
-    #start = time.time()
     path, dist, minstation, distToStation = new.computePathToUni((5332133.1248, -11332133.1248))
     path2, dist2, minstation2, distToStation2 = new.computePathToUni((5352133.1248, -11332133.1248))
 
     print(len(path), dist, minstation, distToStation)
     print(len(path2), dist2, minstation2, distToStation2)
-    #end = time.time()
-    #print(len(path), end-start)
-    #new.computePathFromLRTToHouse("listOfLRTStations.txt")
-
-    #graph, locations  = load_city_graph("edmonton.txt")
