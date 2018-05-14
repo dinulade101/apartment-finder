@@ -13,7 +13,7 @@ Ahmed, talk about BeutifulSoup and url.lib stuff
 Finally to run program, change terminal directory to directory containing “scraper.py”. 
 For ex. cd /Users/dinula/repos/apartment-finder/src
 Run 
-SLACK_BOT_TOKEN="xoxb-340116437617-DzL4UsDqwhZFxWYtyfnLpLp8" python3 scraper.py
+SLACK_BOT_TOKEN="####" python3 scraper.py
 This command is crucial to run program because without it, the Slack API will not have the necessary token to connect with Slack servers. Now the program should be running and scraping apartments. These will be posted on both Slack and Google Sheets. 
 To join the Slack and see the posted apartments, please use this link:
 https://join.slack.com/t/cmput275project/shared_invite/enQtMzQ3NzQ4MTYwNDAzLWI1OGVhYmU4ZjAwNzI5YzBkNWI5MmFiMjU3OTNmYWJiYmM2YmFmNGNlZmY2MDY0OTk1ZWVhNDdjYmQyZGY0OWI
