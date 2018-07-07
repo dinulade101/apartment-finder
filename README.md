@@ -4,10 +4,10 @@
 Apartment Finder is a python bot that scrapes Kijiji.com in order to find apartments within a certain price range. 
 
 ---
-Apartment Finder
-What is this?
-Apartment Finder is a python bot that scrapes Kijiji.com in order to find apartments within a certain price range.
-Install Instructions:
+Apartment Finder<br/>
+What is this?<br/>
+Apartment Finder is a python bot that scrapes Kijiji.com in order to find apartments within a certain price range.<br/>
+Install Instructions:<br/>
 Download the provided .zip file containing the main program directory
 Pip3 already comes with Python3, however if its not available, download and install it also well . 
 Run pip install slackclient in terminal to install Slack Developer Kit for python 
