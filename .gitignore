@@ -1,2 +1,5 @@
 src/cmput.json
+src/.vscode
+src/__pycache__
+src/.DS_Store
 .DS_Store
