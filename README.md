@@ -56,6 +56,12 @@ We used [**OpenStreetMap**](http://openstreetmap.org) to create a Graph instance
 
 We use **path-finding algorithms** such as **A* algorithm** to find the distance of the **shortest path** to University and the nearest transit station. This algorithm works by loading up the **Binary Heap** with the vertex for the ad's location, and then checking the point's neighbouring vertices and adding them to the heap. We use **Manhattan distance** as our **heuristic** to direct the graph search towards the end point, and **optimize** the search to run as **efficiently** as possible. On the other hand, for transit stations, all the vertices for the transit stations are added to the heap at the start, and a **search tree** builds out from each of the stations to the  vertex corresponding to the ad listing. The first station to be reached is then the **closest**, the search tree stops, and that path is **backtracked** to calculate the required distance. This ensures the most efficient search possible. 
 
+### Natural Language Processing: 
+NLP is used to match keywords in the ad to those provided by the user. This will allow the user to instantly see important features they are a looking for in a home.
+
+User can provide keywords such as _discount_ or _school_, and our algorithm will be able to find if these phrases are in the ad and return them to the user.
+
+Before passing the data to the algorithm, unnecessary stop words and symbols are removed and a collection of several synonyms of the extracted words are generated using Wordnet. This allows for optimized results. If a match is found, the algorithm returns the phrase where it's mentioned.
 
 ### Slack Helper:
 [**Slack API**](https://api.slack.com/) is used to notify the user in real time about any good ad postings that it finds. 
@@ -74,18 +80,13 @@ To set up the API
 + Download the JSON file and save it as cmput.json in the same directory as the program 
 + Share the sheet with the email in the cmput.json file 
 
-### Natural Language Processing: 
-NLP is used to match keywords in the ad to those provided by the user. This will allow the user to instantly see important features they are a looking for in a home.
-
-User can provide keywords such as _discount_ or _school_, and our algorithm will be able to find if these phrases are in the ad and return them to the user.
-
-Before passing the data to the algorithm, unnecessary stop words and symbols are removed and a collection of several synonyms of the extracted words are generated using Wordnet. This allows for optimized results. If a match is found, the algorithm returns the phrase where it's mentioned.
-
 
 ## Future Tasks
 Deploy this script on a server online such as Heroku or AWS. 
-Replace Google Sheets with MongoDB or Postgresql
+
+Replace Google Sheets with MongoDB or Postgresql.
 
 ## Creators: 
 [Ahmed Elgohary](github.com/ahmedelgohary)
+
 [Dinula De Silva](https://github.com/dinulade101)
