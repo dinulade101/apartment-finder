@@ -66,11 +66,7 @@ class Scraper():
 
     def get_listings(self):
         # scrapes through kijiji page to find all the listings
-        # counter = 3
         for listing in self.soup.find_all(attrs={"data-ad-id": not None}):
-            # counter -= 1
-            # if counter == 0:
-            #     break
             new_listing = Listing()
 
             new_listing.id = listing["data-ad-id"]
@@ -112,10 +108,8 @@ class Scraper():
             if int(new_listing.price[1:].replace(',', '')[:-3]) > settings.MAX_PRICE:
                 continue
             if (float(lon) > settings.LON_MAX or float(lon) < settings.LON_MIN):
-                #print(float(lon), settings.LON_MAX, settings.LON_MIN)
                 continue
             if (float(lat)> settings.LAT_MAX or float(lat) < settings.LAT_MIN):
-                #print(float(lat), settings.LAT_MAX, settings.LAT_MIN)
                 continue
 
             try:
@@ -153,38 +147,3 @@ class Scraper():
 
 if __name__ == '__main__':
     kijiji = Scraper()
-    # newRouter = RouteFinder("edmonton.txt")
-    # sp = SlackHelper()
-    # sp.initializeSlackHelper()
-    # index = 1
-    # print("here")
-    # sheet = sheets.GoogleSheets()
-    # keyWords = ["pet", "patio", "dog", "cat"]
-    # for i in kijiji.listings:
-    #     #print(i.url)
-    #     kw = keyWordFinder(i.url)
-    #     foundWords = kw.findKeyWords(keyWords)
-    #     print(foundWords)
-    # pathToUni, dist, minStation, distToMinStation = newRouter.computePathToUni((
-    #                 (float(i.lat)*100000), (float(i.lon)*100000)))
-    #
-    # message = '{0} {1} \n *Distance to UNI:* {2:.2f}  \n *Closest LRT:* {3} {4:.2f} km away \n'.format(i.title, i.price, dist, minStation, distToMinStation)
-    # if foundWords:
-    #     message += "*We found the following keywords:* \n"
-    #     for word in foundWords:
-    #         message += str(word) + "\n"
-    #
-    # if int(i.price[1:].replace(',', '')[:-3]) < settings.MIN_PRICE:
-    #     continue
-    # if int(i.price[1:].replace(',', '')[:-3]) > settings.MAX_PRICE:
-    #     continue
-    # if int(distToMinStation) > settings.MAX_DIST_TO_LRT:
-    #     continue
-    # if int(dist) > settings.MAX_DIST_TO_UNI:
-    #     continue
-    #
-    # sheet.add_apartment(message.split(), index)
-    # index += 1
-    # sp.postMessage(message)
-    # except Exception as e:
-    #     print("error2 {}".format(e))
