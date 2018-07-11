@@ -1,42 +1,13 @@
 # Apartment Finder
 
 ## About:
-Apartment Finder is a Python bot that scrapes Kijiji and finds apartments tailored for the user, according to their preferences.
+Apartment Finder is a **Python bot** created for **busy students** to help them save the _time_ and _effort_ required to find an apartment to rent during school. This bot works with **0 user input**, scraping **Kijiji** to find apartments **tailored** to the student, and notifies them in **real-time** on **Slack**.
 
----
-## How does it work?
-
-### Web Scraping
-Web scraping was done using BeautifulSoup4. It scrapes the first 3 pages of Kijiji using the listings’ advertisement ID. The overall idea is that every time the program finds an advertisement ID, it finds that ad listing’s URL and then scrapes the listing itself, in order to find essential information about the listing, such as: Ad description, location, price, how many bathrooms, pet friendliness, if it's furnished, etc. 
-
-### Sanitization
-After the program is done scraping, it uses this data and checks it against the user’s specifications. The user can tailor this for their own preferences, by specifying several factors such as rent, distance to University, distance to LRT, number of bathrooms, and other general things people look for in apartments. 
-
-### Graph Theory, because why not?
-We used [http://openstreetmap.org](OpenStreetMap) to create a Graph instance of Edmonton, Alberta by converting the map data to a list of vertices and edges of the city. We extracted each listing's postal code while scraping, and pass that into the [https://cloud.google.com/maps-platform/](Google Maps API) in order to get a pair of latitude and longitude which is converted to a vertex on the Graph. 
-
-We use path-finding algorithms such as A* to find the distance of the shortest path to University and the nearest transit station.For this algorithm, we load up the heap with the start location, and then keep on adding to the heap after checking a point’s neighbors. Moreover, as a heuristic for the A* algorithm, we use euclidean distance to direct the graph search towards the end point, and help make the search run faster. The LRT route finding is done using a similar technique. However, for the LRT’s, all the locations of LRTs are added to the heap at the start, and a search tree builds out from each of the station locations to the home under consideration. The first LRT station to be reached is then the closest, and the path can be traced back to calculate the distance from the LRT station to the house. 
-The route finder class contains several important helper functions as well. For instance, convertLatLonDistToMetres converts the distance between two coordinates given in latitudes and longitudes to km. Moreover, the load city graph can parse through a text file containing the vertices and edges of a particular city, and build a graph out of them.
-
-
-### Slack Helper:
-The slack helper class utilizes the Python Slack API to connect with the correct Slack channel and login, and then post text messages. This is used in order to promptly notify the user of any listings, so that the user can only check the listings that the Slack Bot spits out into the channel. 
-After everything is calculated and all the data is checked and is up to the required specifications, all the eligible listings are then used to compose a message. This message is then used by a Slackbot to promptly notify the user on a Slack Channel that a new listing exists. The message is also used by a Google Sheets API in order to store the listing on Google Sheets as means of having a backend database to store all the listings that we liked.
-
-### Google Sheets
-We use the Google Sheets API as means of a “backend database” in order to store all the listings that the user might like. This is just for storing the listings, and not notify the user. The user can go any time onto the Google Sheets in order to look at the past listings.
-To setup Google Sheets: 1) create a google sheet and named it however you like 2) Go to Google API manager and create a project 3) Add Google Drive API to the project 4) Create credentials to access this API, use webserver option and give access to application data 5) Create a service account and assign the role project editor 6) Download the JSON file and save it as cmput.json in same directory as program 7) go to your sheet and choose to share the sheet to the email in the cmput.json file. 
-
-### Natural Language Processing: 
-NLP is used to match keywords in the ad to those provided by the user. This will allow the user to instantly see important features they are a looking for in a home.
-
-User can provide keywords such as “discount” or “school,” and our algorithm will be able to find if these phrases are in the ad and return them to the user.
-
-Before passing the data to the algorithm, unnecessary stop words and symbols are removed and a collection of several synonyms of the extracted words are generated using Wordnet. This allows for optimized results. If a match is found, the algorithm returns the phrase where it's mentioned.
+This is currently tailored for University of Alberta students, but could be modified to work _anywhere_.
 
 --- 
 
-## Install Instructions:
+## Installation:
 + Clone this repo
 + Pip3 already comes with Python3, however if its not available, download and install it also well . <br/>
 + Install Slack Developer Kit 
@@ -55,6 +26,66 @@ nltk.download()
 
 --- 
 
+## Usage:
+In ```Settings.py```, you can set up:
++ _MAX_ and _MIN_ price you are willing to pay for rent
++ _MAX_ distance of commute to _university_ and _transit stations_
++ _Location_ of the neighbourhoods you're looking for apartments
++ _Keywords_ you are looking for in the ad, that will be used by our **Natural Language Processing** algorithm to find matches in the ad
+
+In ```listOfLRTStations.txt```, add your local transit stations.
+
+Replace ```edmonton.txt``` with your own city's data, downloaded from [**OpenStreetMap**](http://openstreetmap.org)
+
+---
+
+## How does it work?
+
+### Web Scraping
+Web scraping is done using [**BeautifulSoup**](https://www.crummy.com/software/BeautifulSoup/bs4/doc/). It scrapes the first 3 pages of Kijiji using the listings’ advertisement ID. The overall idea is that every time the program finds an advertisement ID, it finds that ad listing’s URL and scrapes the listing itself, finding essential information about the listing, such as: Ad description, location, price, how many bathrooms, pet friendliness, if it's furnished, etc. 
+
+
+### Sanitization
+After the program is done scraping, it uses this data and checks it against the user’s specifications. The user can tailor this for their own preferences, by specifying several factors such as rent, distance to University, distance to LRT, number of bathrooms, and other general things people look for in apartments. 
+
+
+### Graph Theory, because why not?
+Even though we could have used Google Maps API to calculate distance between 2 different locations, we wanted to put our **Graph Theory** knowledge to test.
+
+We used [**OpenStreetMap**](http://openstreetmap.org) to create a Graph instance of Edmonton, Alberta by converting the map data to a list of vertices and edges of the city. We extract each listing's postal code while scraping, and pass that into the [**Google Maps API**](https://cloud.google.com/maps-platform/) in order to get a pair of latitude and longitude which is converted to a vertex on the Graph. 
+
+We use **path-finding algorithms** such as **A* algorithm** to find the distance of the **shortest path** to University and the nearest transit station. This algorithm works by loading up the **Binary Heap** with the vertex for the ad's location, and then checking the point's neighbouring vertices and adding them to the heap. We use **Manhattan distance** as our **heuristic** to direct the graph search towards the end point, and **optimize** the search to run as **efficiently** as possible. On the other hand, for transit stations, all the vertices for the transit stations are added to the heap at the start, and a **search tree** builds out from each of the stations to the  vertex corresponding to the ad listing. The first station to be reached is then the **closest**, the search tree stops, and that path is **backtracked** to calculate the required distance. This ensures the most efficient search possible. 
+
+
+### Slack Helper:
+[**Slack API**](https://api.slack.com/) is used to notify the user in real time about any good ad postings that it finds. 
+
+Eligible listings are used to compose a message which is used by the Slackbot to send a message on the Slack Channel. The message is also used by the Google Sheets API to store the listing on Google Sheets.
+
+### Google Sheets
+For this small project, Google Sheets was used as our "database” in order to store the listings that match up to the user's preferences. 
+
+To set up the API
++ Create a Google sheet
++ Create a project on [Google API manager](https://console.cloud.google.com/apis/dashboard)
++ Add **Google Drive API** to the project 
++ Create your credentials, and use WebServer option and allow application data access
++ Create a service account and assign the role project editor 
++ Download the JSON file and save it as cmput.json in the same directory as the program 
++ Share the sheet with the email in the cmput.json file 
+
+### Natural Language Processing: 
+NLP is used to match keywords in the ad to those provided by the user. This will allow the user to instantly see important features they are a looking for in a home.
+
+User can provide keywords such as _discount_ or _school_, and our algorithm will be able to find if these phrases are in the ad and return them to the user.
+
+Before passing the data to the algorithm, unnecessary stop words and symbols are removed and a collection of several synonyms of the extracted words are generated using Wordnet. This allows for optimized results. If a match is found, the algorithm returns the phrase where it's mentioned.
+
+
 ## Future Tasks
 Deploy this script on a server online such as Heroku or AWS. 
 Replace Google Sheets with MongoDB or Postgresql
+
+## Creators: 
+[Ahmed Elgohary](github.com/ahmedelgohary)
+[Dinula De Silva](https://github.com/dinulade101)
