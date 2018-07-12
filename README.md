@@ -7,8 +7,6 @@ Apartment Finder is a **Python bot** created for **busy students** to help them 
 
 This is currently tailored for University of Alberta students, but could be modified to work _anywhere_.
 
-<img src="/screenshots/Screenshot1.png" width=400>
-<img style="float:left" src="/screenshots/Screenshot2.png" width=400>
 
 --- 
 
@@ -95,3 +93,7 @@ Replace Google Sheets with MongoDB or Postgresql.
 [Ahmed Elgohary](github.com/ahmedelgohary)
 
 [Dinula De Silva](https://github.com/dinulade101)
+
+## Screenshots: 
+<img src="/screenshots/Screenshot1.png" width=400>
+<img style="float:left" src="/screenshots/Screenshot2.png" width=400>
