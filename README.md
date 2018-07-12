@@ -95,5 +95,4 @@ Replace Google Sheets with MongoDB or Postgresql.
 [Dinula De Silva](https://github.com/dinulade101)
 
 ## Screenshots: 
-<img src="/screenshots/Screenshot1.png" width=400>
-<img style="float:left" src="/screenshots/Screenshot2.png" width=400>
+<img style="float:left" src="/screenshots/Screenshot3.png" width=600>
