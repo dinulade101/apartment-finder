@@ -5,6 +5,9 @@ Apartment Finder is a **Python bot** created for **busy students** to help them 
 
 This is currently tailored for University of Alberta students, but could be modified to work _anywhere_.
 
+![Screenshot1](/screenshots/Screenshot1.PNG)
+![Screenshot1](/screenshots/Screenshot2.PNG)
+
 --- 
 
 ## Installation:
