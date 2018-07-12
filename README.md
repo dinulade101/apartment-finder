@@ -1,12 +1,14 @@
 # Apartment Finder
 
+<img src="/screenshots/apartmentfinder.png" width=300>
+
 ## About:
 Apartment Finder is a **Python bot** created for **busy students** to help them save the _time_ and _effort_ required to find an apartment to rent during school. This bot works with **0 user input**, scraping **Kijiji** to find apartments **tailored** to the student, and notifies them in **real-time** on **Slack**.
 
 This is currently tailored for University of Alberta students, but could be modified to work _anywhere_.
 
-<img src="/screenshots/Screenshot1.png" width=200>
-<img src="/screenshots/Screenshot2.png" width=200>
+<img src="/screenshots/Screenshot1.png" width=400>
+<img style="float:left" src="/screenshots/Screenshot2.png" width=400>
 
 --- 
 
