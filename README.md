@@ -71,6 +71,41 @@ Before passing the data to the algorithm, unnecessary stop words and symbols are
 
 Eligible listings are used to compose a message which is used by the Slackbot to send a message on the Slack Channel. The message is also used by the Google Sheets API to store the listing on Google Sheets.
 
+## The Bot in Action
+
+Below is a screenshot of the Settings.py file and one of several Slack posts created by the bot
+
+Settings.py
+```
+# set the minimum and maximum prices for the apartments
+MIN_PRICE = 0
+MAX_PRICE = 1299
+
+#DELAY = 10
+
+# maximum distance away from university
+MAX_DIST_TO_UNI = 100
+
+# maximum distance away closest LRT station
+MAX_DIST_TO_LRT = 100
+
+
+# define lat and lon ranges for houses you want to find 
+LAT_MIN = 53.395655
+LAT_MAX = 53.7160999
+
+LON_MIN = -113.7147381
+LON_MAX = -113.2731591
+
+
+# define keywords to match with Kijij advertisement 
+KEYWORDS = ["pets", "smoking", "school", "river", "free", "discount", "animals", "rooms", "internet"]
+
+```
+<img src="/screenshots/screenshot4.png" width=500>
+
+As you can see, the bot found a suitable apartment with the distance to the Univeristy of Alberta, as well as a distance to the closest LRT. Moreover, the bot was able to match the KEYWORDS defined in the settings.py file to the description of the advertisement. This finding of keywords is extremely useful as it saves the user from having to check the ad their selves and rather quickly look at a Slack post.
+
 ### Google Sheets
 For this small project, Google Sheets was used as our "database” in order to store the listings that match up to the user's preferences. 
 
